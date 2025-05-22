@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ギャルゲー</title>
+    <link rel="stylesheet" href="./style.css/style.css">
+</head>
+<body>
+
+<div id="game-box">
+        <!-- タイトル画面 -->
+        <div id="start-screen">
+          <h1>ギャルゲー</h1>
+          <button id="start-button">スタート</button>
+        </div>
+
+        <!-- キャラ選択画面 -->
+  <div id="chara-select" style="display: none;">
+    <h2>キャラを選択</h2>
+    <div class="character-options">
+
+        <div class="character" data-name="さくら">
+          <img src="./明るい.jpg" alt="さくら" />
+          <p>さくら</p>
+        </div>
+
+        <div class="character" data-name="あお">
+          <img src="./クール.jpg" alt="あお" />
+          <p>あお</p>
+        </div>
+
+        <div class="character" data-name="ゆい">
+          <img src="./ツンデレ.jpg" alt="ゆい" />
+          <p>ゆい</p>
+        </div>
+
+        <div class="character" id="random-choice">
+          <img src="./1327.png" alt="ランダム" />
+          <p>ランダム</p>
+        </div>
+
+        <div class="character" data-name="？？？" style="display: none;">
+          <img src="./f9ea2d9a-694c-436b-af24-9296d80592b2_1200x.avif" alt="？？？" />
+          <p>？？？</p>
+        </div>
+
+    </div>
+
+    <div class="back-to-title-box">
+      <button id="back-to-title">戻る</button>
+    </div>
+    
+  </div>
+
+  <!-- シナリオ画面 -->
+   <!--さくら-->
+  <div id="sakura-scenario" class="scenario-screen" style="display: none;">
+    <div class="character-stand" style="display: none;">
+      <img src="./akarui-toumei.png" alt="あおの立ち絵" >
+    </div>
+    <div class="dialogue" style="display: none;">
+
+      <p style="display: none;">さくら :「やっと来たねっ！ …ふふっ、待ってたんだよ？」</p>
+
+    </div>
+  </div>
+  
+  <!--あお-->
+
+  <div id="ao-scenario" class="scenario-screen" style="display: none;">
+    <div class="character-stand" style="display: none;">
+      <img src="./cool-toumei.png" alt="あおの立ち絵" >
+    </div>
+    
+    <div class="dialogue" style="display: none;">
+      
+      <p style="display: none;">あお :「また来たの？ ふん…物好きね。……でも嫌いじゃない。」</p>
+      
+    </div>
+  </div>
+
+  <!--ゆい-->
+  
+  <div id="yui-scenario" class="scenario-screen" style="display: none;">
+
+    <div id="yui-stand" class="character-stand" style="display: none;">
+      <img src="./tsundere-tomei.png" alt="ゆいの立ち絵" >
+    </div>
+    <div id="yui-stand-1" class="character-stand" style="display:none;">
+      <img src="./yui-hutsu.png" alt="ゆいの普通立ち絵">
+    </div>
+    <div id="yui-stand-2" class="character-stand" style="display:none;">
+      <img src="./yui-kire.png" alt="ゆいのキレ立ち絵">
+    </div>
+    <div id="yui-stand-3" class="character-stand" style="display:none;">
+      <img src="./yui-tere.png" alt="ゆいの照れ立ち絵">
+    </div>
+
+    <div class="dialogue" style="display: none;">
+      
+      <p style="display: none;">ゆい :「べ、別にあんたのために来たんじゃないんだからねっ！」</p>
+
+    </div>
+  </div>
+
+  <div id="dialogue-box" style="display: none;">
+    <p id="dialogue-text"></p>
+  </div>
+
+</div>
+
+<!-- ゆい選択肢 -->
+<div id="yui-choices" style="display: none;">
+  <button class="yui-choice" data-choice="1">「会えて嬉しいよ」</button>
+  <button class="yui-choice" data-choice="2">「ツンツンしてるね」</button>
+  <button class="yui-choice" data-choice="3">「実はちょっと寂しかった」</button>
+</div>
+
+
+  <button id="back-to-characters">キャラ選択へ戻る</button>
+
+  <audio id="bgm" src="./4 優しいあの子_short.mp3" loop></audio>
+
+  <audio id="se-click" src="./決定ボタンを押す53.mp3" preload="auto"></audio>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <script>
+    //スタート画面
+    $("#start-button").on("click",function(){
+      playClickSE();
+      const bgm = $("#bgm");
+  bgm.prop("volume", 0.5); // jQueryで音量設定
+  bgm[0].play(); 
+
+      $("#start-screen").fadeOut(800, function () {
+      $("#chara-select").fadeIn(800);
+    });
+    });
+
+    //ランダムボタン押した時の処理
+    $("#random-choice").on("click", function () {
+      playClickSE();
+  const chara = ["さくら", "あお", "ゆい"];
+  const randomIndex = Math.floor(Math.random() * chara.length);
+  const randomName = chara[randomIndex];
+
+  setTimeout(function () {
+    $('.character[data-name="' + randomName + '"]').click();
+  }, 100); 
+});
+
+  //キャラ画面からタイトルに戻るやつ
+  $("#back-to-title").on("click",function(){
+    $("#chara-select").hide();
+    $("#start-screen").show();
+});
+
+  //キャラ画面からシナリオ
+  $(".character").on("click", function () {
+    playClickSE();
+  const selectedName = $(this).data("name");
+  console.log("選択されたキャラ:", selectedName);
+
+  $("#chara-select").fadeOut(800, function () {
+    // すべて非表示
+    $(".scenario-screen").hide();
+    $(".character-stand").hide();
+    $(".dialogue").hide();
+
+    let scenarioId = "";
+if (selectedName === "さくら") {
+  scenarioId = "#sakura-scenario";
+} else if (selectedName === "あお") {
+  scenarioId = "#ao-scenario";
+} else if (selectedName === "ゆい") {
+  scenarioId = "#yui-scenario";
+}
+
+ 
+if (scenarioId) {
+        const scenario = $(scenarioId);
+        scenario.show(); // 親だけ表示
+
+        scenario.find(".character-stand").hide();
+
+        if (selectedName === "ゆい") {
+          $("#yui-stand").fadeIn(800, function () {
+            scenario.find(".dialogue").fadeIn(600, function () {
+              const dialogueText = scenario.find(".dialogue p").text();
+
+              $("#dialogue-box").fadeIn();
+              typeText(dialogueText, "#dialogue-text", function () {
+                $("#yui-choices").fadeIn();
+              });
+            });
+          });
+        } else {
+          // 他キャラ（さくら・あお）は最初の立ち絵を表示
+          scenario.find(".character-stand").first().fadeIn(800, function () {
+            scenario.find(".dialogue").fadeIn(600, function () {
+              const dialogueText = scenario.find(".dialogue p").text();
+              $("#dialogue-box").fadeIn();
+              typeText(dialogueText, "#dialogue-text", function () {
+                $("#back-to-characters").fadeIn(); // 戻れるように
+              });
+            });
+          });
+        }
+      }
+    });
+  });
+
+//タイプライター処理
+
+function typeText(text, targetSelector, callback) {
+  let index = 0;
+  const speed = 50; // 表示スピード
+
+  function showNextChar() {
+    if (index < text.length) { //文字数取得
+      $(targetSelector).append(text.charAt(index));
+      index++;//indexの値を1増やしてる
+      setTimeout(showNextChar, speed);//一文字ずつ
+    } else {
+      if (callback) callback(); // 表示完了後の処理、引数ない場合は何もしない
+    }
+  }
+
+  $(targetSelector).text(""); // 一個前のセリフをリセット
+  showNextChar();
+}
+
+
+ // ゆいの選択肢クリック時
+$("#yui-choices").on("click", ".yui-choice", function () {
+  playClickSE();
+  const choice = $(this).data("choice"); // どの選択肢かを取得
+  let yuiResponse = "";
+  let standSelector = "";
+
+  $(".character-stand").hide();
+
+  // 選択肢に応じたゆいの返答
+  if (choice === 1) {
+    yuiResponse = "ゆい :「ふん、別にあんたのことなんて気にしてないんだから。」";
+    standSelector = "#yui-stand-1";
+  } else if (choice === 2) {
+    yuiResponse = "ゆい :「なによ、急に…うざいんだけど！」";
+    standSelector = "#yui-stand-2";
+  } else if (choice === 3) {
+    yuiResponse = "ゆい :「はぁ！？そ、そんなこと言われても…別にアンタのことなんて気にしてないんだから！」";
+    standSelector = "#yui-stand-3";
+  }
+
+  $("#dialogue-text").text(""); // 入ってるセリフをリセット
+
+  $(standSelector).fadeIn(800, function () {
+    typeText(yuiResponse, "#dialogue-text",function(){// ゆいの返事を一文字ずつ
+      $("#back-to-characters").fadeIn(600);//戻るボタン追加
+      });
+    });
+  
+  $("#back-to-characters").fadeIn();
+  $("#yui-choices").fadeOut(); // 選択肢を非表示
+});
+
+$("#back-to-characters").on("click", function () {
+  // 現在のシナリオ画面を非表示
+  $(".scenario-screen").fadeOut(600, function () {
+    // ログ・立ち絵・選択肢・戻るボタンを非表示
+    $("#dialogue-box").hide();
+    $(".character-stand").hide();
+    $(".dialogue").hide();
+    $("#yui-choices").hide();
+    $("#back-to-characters").hide();
+    
+    // キャラ選択画面を表示
+    $("#chara-select").fadeIn(600);
+  });
+});
+
+function playClickSE() {
+  const se = $("#se-click")[0];
+  se.currentTime = 0; // 連続クリックに対応
+  se.play();
+}
+    
+  </script>       
+    
+</body>
+</html>
